@@ -17,9 +17,12 @@ from datetime import datetime, timezone, timedelta, date
 
 from collections import Counter
 
+import configparser
+
 import unittest
 
-from frctl import Stack
+from blkswn import Stack
+from blkswn import Fetcher
 
 logfile = os.environ['X_LOGFILE'] if os.environ.get('X_LOGFILE') is not None else "test.log"
 logging.basicConfig(filename=logfile, level=logging.DEBUG)
@@ -145,6 +148,39 @@ class Test(unittest.TestCase):
             sz0 -= 1
 
         self.assertTrue(self.stack0.is_empty())
+
+    def test_009(self):
+        config = configparser.ConfigParser()
+        config.read('blkswn.cfg')
+        v0 = config.sections()
+        self.logger.info(str(v0))
+        self.assertIsNotNone(v0)
+        self.assertTrue(config['fetcher-proxy'])
+        self.logger.info(config['fetcher-proxy']['host'])
+        self.logger.info(config['fetcher-proxy']['port'])
+        self.logger.info(config['fetcher-proxy']['type'])
+        ftchr = Fetcher.instance(logger=self.logger, config=config)
+        # ftchr = Fetcher.instance(logger=self.logger)
+        self.assertIsNotNone(ftchr)
+        self.logger.info(ftchr)
+
+    def test_011(self):
+        """
+        This uses the singleton constructed above.
+        """
+        v0 = "http://www.bt.com/"
+
+        r = Fetcher.instance().fetch(url=v0)
+        self.assertIsNotNone(r)
+
+        v0 = "http://www.anapioficeandfire.com/api/characters/2105"
+        ctr = 1;
+        while ctr > 0:
+            ctr -= 1
+            r = Fetcher.instance().fetch(url=v0)
+            self.assertIsNotNone(r)
+            self.logger.info(r.read())
+
 
 #
 # The sys.argv line will complain to you if you run it with ipython

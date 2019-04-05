@@ -19,7 +19,7 @@ from collections import Counter
 
 import unittest
 
-from frctl import Queue
+from blkswn import Queue
 
 logfile = os.environ['X_LOGFILE'] if os.environ.get('X_LOGFILE') is not None else "test.log"
 logging.basicConfig(filename=logfile, level=logging.DEBUG)
