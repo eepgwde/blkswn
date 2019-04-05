@@ -179,6 +179,21 @@ class Test(unittest.TestCase):
             ctr -= 1
             r = Fetcher.instance().fetch(url=v0)
             self.assertIsNotNone(r)
+            self.logger.info(str(r.info()))
+            self.logger.info(r.read())
+
+    def test_013(self):
+        """
+        This uses the singleton constructed above.
+        """
+
+        v0 = "http://www.anapioficeandfire.com/api/characters"
+        ctr = 1;
+        while ctr > 0:
+            ctr -= 1
+            r = Fetcher.instance().fetch(url=v0)
+            self.assertIsNotNone(r)
+            self.logger.info(str(r.info()))
             self.logger.info(r.read())
 
 
