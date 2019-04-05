@@ -5,6 +5,7 @@ from blkswn._Stack import Stack
 from blkswn._Queue import Queue
 from blkswn._Fetcher import Fetcher
 from blkswn._Fetcher import _Singleton as Configuration
+from blkswn._IceFire import IceFire
 
 __copyright__ = 'Copyright 2019 Walter Eaves'
 __license__ = 'GPLv3'

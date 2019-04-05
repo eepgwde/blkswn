@@ -12,17 +12,17 @@ Test file
 
 import sys, logging, os
 from unidecode import unidecode
-
 from datetime import datetime, timezone, timedelta, date
-
 from collections import Counter
-
 import configparser
+import json
+import ast
 
 import unittest
 
 from blkswn import Stack
 from blkswn import Fetcher, Configuration
+from blkswn import IceFire
 
 logfile = os.environ['X_LOGFILE'] if os.environ.get('X_LOGFILE') is not None else "test.log"
 logging.basicConfig(filename=logfile, level=logging.DEBUG)
@@ -150,7 +150,7 @@ class Test(unittest.TestCase):
         self.assertTrue(self.stack0.is_empty())
 
     def test_009(self):
-        config = Configuration.instance(file='blkswn.cfg')
+        config = Configuration.instance(file='blkswn.cfg').config
 
         v0 = config.sections()
         self.logger.info(str(v0))
@@ -170,7 +170,7 @@ class Test(unittest.TestCase):
         """
         v0 = "http://www.bt.com/"
 
-        ftchr = Fetcher(logger=self.logger, config=Configuration.instance())
+        ftchr = Fetcher(logger=self.logger, config=Configuration.instance().config)
         r = ftchr.fetch(url=v0)
         self.assertIsNotNone(r)
 
@@ -188,7 +188,7 @@ class Test(unittest.TestCase):
         This uses the singleton constructed above.
         """
 
-        ftchr = Fetcher(logger=self.logger, config=Configuration.instance())
+        ftchr = Fetcher(logger=self.logger, config=Configuration.instance().config)
         v0 = "http://www.anapioficeandfire.com/api/characters"
         ctr = 1;
         while ctr > 0:
@@ -197,6 +197,42 @@ class Test(unittest.TestCase):
             self.assertIsNotNone(r)
             self.logger.info(str(r.info()))
             self.logger.info(r.read())
+
+
+    def test_015(self):
+        """
+        Houses use the Link response header to get the number of pages and the page size.
+        """
+        ftchr = Fetcher(logger=self.logger, config=Configuration.instance().config)
+        idx0 = "https://www.anapioficeandfire.com/api/houses"
+
+        r = ftchr.fetch(url=idx0)
+        hdrs = r.info()
+        r1 = r.read()
+
+        self.assertTrue('Link' in hdrs)
+        self.logger.info(hdrs['Link'])
+        with open('houses.bytes', 'wb') as f0:
+            f0.write(r1)
+
+        with open('hdrs.json', 'w') as f0:
+            f0.write(hdrs['Link'])
+
+        x0 = ast.literal_eval(r1.decode())
+        self.logger.info(type(x0))
+        self.assertTrue(len(x0) > 0)
+        self.logger.info(x0[-1])
+
+    def test_017(self):
+        """
+        Houses use the Link response header to get the number of pages and the page size.
+        """
+        ftchr = IceFire(logger=self.logger, config=Configuration.instance().config)
+        idx0 = "https://www.anapioficeandfire.com/api/houses"
+        r = ftchr.index(url=idx0)
+        r1 = r.read()
+        x0 = ast.literal_eval(r1.decode())
+        self.logger.info(x0[-1])
 
 
 #

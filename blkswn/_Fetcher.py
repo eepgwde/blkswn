@@ -13,8 +13,10 @@ import configparser
 import socks
 import socket
 from urllib import request
+from urllib.parse import urlparse
 
 import ast
+import re
 
 from functools import partial
 
@@ -29,16 +31,13 @@ class Fetcher(object):
   def __init__(self, **kwargs):
     self.config = kwargs.get('config', configparser.ConfigParser())
     self.logger = kwargs.get('logger', logging.getLogger('Test'))
-    self.logger.info(self.config.sections())
     if 'fetcher-proxy' in self.config.sections():
       d0 = self.config['fetcher-proxy']
       if d0['type'].startswith("socks5"):
         socks.set_default_proxy(socks.SOCKS5, d0['host'], int(d0['port']))
         socket.socket = socks.socksocket
       if 'hdrs' in d0:
-        self.logger.info(d0['hdrs'])
         self._hdrs = ast.literal_eval(d0['hdrs'])
-        self.logger.info(self._hdrs)
         self._opener = request.build_opener()
         self._opener.addheaders = self._hdrs
     pass
@@ -56,16 +55,32 @@ class Fetcher(object):
 
 
 class _Singleton(object):
+  """
+  A configuration singleton
+  """
   _impl = None
+  config = None
 
   @classmethod
   def instance(cls, **kwargs):
     if cls._impl is None:
-      cls._impl = configparser.ConfigParser()
+      cls._impl = _Singleton()
+      cls.config = configparser.ConfigParser()
       if kwargs.get('file', None) is not None:
-          cls._impl.read(kwargs['file'])
+          cls.config.read(kwargs['file'])
       if kwargs.get('config', None) is not None:
-          cls._impl = config.read(kwargs['config'])
+          cls.config = config.read(kwargs['config'])
 
     return cls._impl
+
+  def isvalid0(url):
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc, result.path])
+    except:
+        return False
+
+    return True
+
+
 
