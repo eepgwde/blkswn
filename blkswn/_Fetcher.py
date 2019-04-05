@@ -18,10 +18,10 @@ import ast
 
 from functools import partial
 
-class _Impl(object):
+class Fetcher(object):
   """
-    Graph and votes methods.
-    """
+  URL fetch with more features.
+  """
   _tions = None
   _hdrs = None
   _opener = None
@@ -55,11 +55,17 @@ class _Impl(object):
     pass
 
 
-class Singleton(object):
+class _Singleton(object):
   _impl = None
-  
+
   @classmethod
   def instance(cls, **kwargs):
     if cls._impl is None:
-      cls._impl = _Impl(**kwargs)
+      cls._impl = configparser.ConfigParser()
+      if kwargs.get('file', None) is not None:
+          cls._impl.read(kwargs['file'])
+      if kwargs.get('config', None) is not None:
+          cls._impl = config.read(kwargs['config'])
+
     return cls._impl
+

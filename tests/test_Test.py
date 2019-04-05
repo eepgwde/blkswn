@@ -22,7 +22,7 @@ import configparser
 import unittest
 
 from blkswn import Stack
-from blkswn import Fetcher
+from blkswn import Fetcher, Configuration
 
 logfile = os.environ['X_LOGFILE'] if os.environ.get('X_LOGFILE') is not None else "test.log"
 logging.basicConfig(filename=logfile, level=logging.DEBUG)
@@ -150,8 +150,8 @@ class Test(unittest.TestCase):
         self.assertTrue(self.stack0.is_empty())
 
     def test_009(self):
-        config = configparser.ConfigParser()
-        config.read('blkswn.cfg')
+        config = Configuration.instance(file='blkswn.cfg')
+
         v0 = config.sections()
         self.logger.info(str(v0))
         self.assertIsNotNone(v0)
@@ -159,8 +159,8 @@ class Test(unittest.TestCase):
         self.logger.info(config['fetcher-proxy']['host'])
         self.logger.info(config['fetcher-proxy']['port'])
         self.logger.info(config['fetcher-proxy']['type'])
-        ftchr = Fetcher.instance(logger=self.logger, config=config)
-        # ftchr = Fetcher.instance(logger=self.logger)
+        ftchr = Fetcher(logger=self.logger, config=config)
+        # ftchr = Fetcher(logger=self.logger)
         self.assertIsNotNone(ftchr)
         self.logger.info(ftchr)
 
@@ -170,14 +170,15 @@ class Test(unittest.TestCase):
         """
         v0 = "http://www.bt.com/"
 
-        r = Fetcher.instance().fetch(url=v0)
+        ftchr = Fetcher(logger=self.logger, config=Configuration.instance())
+        r = ftchr.fetch(url=v0)
         self.assertIsNotNone(r)
 
         v0 = "http://www.anapioficeandfire.com/api/characters/2105"
         ctr = 1;
         while ctr > 0:
             ctr -= 1
-            r = Fetcher.instance().fetch(url=v0)
+            r = ftchr.fetch(url=v0)
             self.assertIsNotNone(r)
             self.logger.info(str(r.info()))
             self.logger.info(r.read())
@@ -187,11 +188,12 @@ class Test(unittest.TestCase):
         This uses the singleton constructed above.
         """
 
+        ftchr = Fetcher(logger=self.logger, config=Configuration.instance())
         v0 = "http://www.anapioficeandfire.com/api/characters"
         ctr = 1;
         while ctr > 0:
             ctr -= 1
-            r = Fetcher.instance().fetch(url=v0)
+            r = ftchr.fetch(url=v0)
             self.assertIsNotNone(r)
             self.logger.info(str(r.info()))
             self.logger.info(r.read())

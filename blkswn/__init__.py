@@ -3,9 +3,10 @@
 from blkswn._version import __version__
 from blkswn._Stack import Stack
 from blkswn._Queue import Queue
-from blkswn._Fetcher import Singleton as Fetcher
+from blkswn._Fetcher import Fetcher
+from blkswn._Fetcher import _Singleton as Configuration
 
-__copyright__ = 'Copyright 2016 Walter Eaves'
+__copyright__ = 'Copyright 2019 Walter Eaves'
 __license__ = 'GPLv3'
 __title__ = 'blkswn'
 
