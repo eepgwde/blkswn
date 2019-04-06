@@ -2,13 +2,13 @@
 Test file 
 
 """
-## @file Test2.py
+## @file Test3.py
 # @author weaves
 # @brief Unittest
 #
 # @note
 #
-# Relatively complete test.
+# Relatively complete test of IceFireA
 
 import sys, logging, os
 from unidecode import unidecode
@@ -18,7 +18,9 @@ import re
 from urllib.parse import urlparse
 
 from blkswn import Configuration
+from blkswn import IceFire
 from blkswn import IceFireR
+from blkswn import IceFireA
 
 import unittest
 
@@ -31,7 +33,7 @@ logger.addHandler(sh)
 trs0 = os.path.join(os.path.dirname(__file__), "test.txt")
 
 
-class Test2(unittest.TestCase):
+class Test3(unittest.TestCase):
     """
     A source directory dir0 is taken from the environment as SDIR or 
     is tests/media and should contain .m4a files.
@@ -68,6 +70,7 @@ class Test2(unittest.TestCase):
 
     ## Constructs
     def test_000(self):
+        return
         chs = IceFireR(config = Configuration.instance().config,
                        type0='books',
                       logger=self.logger)
@@ -86,46 +89,65 @@ class Test2(unittest.TestCase):
 
 
     def test_002(self):
-        chs = IceFireR(config = Configuration.instance().config,
-                       type0='books',
-                       logger=self.logger)
-
-        ichs = iter(chs)
-        houses = [ x for x in ichs ]
-
-        self.assertIsNotNone(houses)
-        self.assertTrue(len(houses) > 0)
-
-        with open('books.txt', 'w') as f0:
-            f0.write(str(houses))
+        """
+        Basic loading from file for testing.
+        """
+        books = IceFireA(type0="books", file="books.txt")
+        self.assertIsNotNone(books)
+        self.ar = books
 
     def test_004(self):
-        chs = IceFireR(config = Configuration.instance().config,
-                       type0='houses',
-                       logger=self.logger)
+        """
+        Counting
+        """
+        self.test_002()
+        l0 = self.ar._src
+        self.logger.info(type(l0))
+        l1 = list(l0)
+        self.logger.info("004: count: {cnt}".format(cnt=len(l1)) )
 
-        ichs = iter(chs)
-        houses = [ x for x in ichs ]
-
-        self.assertIsNotNone(houses)
-        self.assertTrue(len(houses) > 0)
-
-        with open('houses.txt', 'w') as f0:
-            f0.write(str(houses))
+        pass
 
     def test_006(self):
-        chs = IceFireR(config = Configuration.instance().config,
-                       type0='characters',
-                       logger=self.logger)
+        """
+        Other checks
+        """
+        ts = IceFire.types0
+        ts = ", ".join(ts)
+        self.logger.info("006: {ts}".format(ts=ts))
 
-        ichs = iter(chs)
-        houses = [ x for x in ichs ]
+        self.srcs = ( ( "{x}".format(x=x), "{x}.txt".format(x=x) ) for x in IceFire.types0 )
 
-        self.assertIsNotNone(houses)
-        self.assertTrue(len(houses) > 0)
+        self.srcs = list(self.srcs)  
+        self.logger.info(self.srcs)
 
-        with open('characters.txt', 'w') as f0:
-            f0.write(str(houses))
+        fctr = lambda x: IceFireA(type0=x[0], file=x[1])
+        v0 = fctr(self.srcs[0])
+        self.logger.info(type(v0))
+
+        for x in self.srcs:
+            self.logger.info(type(fctr(x)))
+
+        return
+
+        self.srcs0 = ( fctr(x) for x in self.srcs )
+        v0 = next(iter(self.srcs0))
+        self.logger.info(type(v0))
+
+        return
+
+        self.srcs0 = ( list(x) for x in self.srcs )
+
+        cnts = ( len(x) for x in self.srcs0 )
+        self.logger.info(", ".join((str(x) for x in cnts)) )
+
+        return
+        books = IceFireA(type0="books", file="books.txt")
+        l0 = self.ar._src
+        self.logger.info(type(l0))
+        l1 = list(l0)
+        self.logger.info("004: count: {cnt}".format(cnt=len(l1)) )
+
 
 #
 # The sys.argv line will complain to you if you run it with ipython

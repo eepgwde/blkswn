@@ -34,7 +34,7 @@ class IceFire(Fetcher):
   """
   index0 = None
 
-  types0 = ( 'houses', 'characters', 'books')  # these are known to work
+  types0 = ( 'books', 'houses', 'characters')  # these are known to work and are in order of size.
   type0 = 'houses'                             # the default used by the ctr.
   idx0 = "https://www.anapioficeandfire.com/api/{type0}"
   idx1 = None

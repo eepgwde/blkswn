@@ -1,75 +1,64 @@
 * weaves
 
-This is a Python script 'minfo' that uses this module MInfo to extract
-information from media files.
+** Packaging module is blkswn
 
-This is then used to produce a chapters file for MP4Box to produce an Apple
-audiofile (an .m4b) that can be a full audiobook with chapters.
+The __init__.py script brings the module imports together.
 
-* MediaInfo
+There is a singleton Configuration.instance() with utility methods in
+_Fetcher
 
-There is a package for reading media file information.
+_Queue.py _version.py _Stack.py are from this package's template. They can
+be ignored.
 
- https://mediaarea.net/en/MediaInfo
+__main__.py is a sample command-line script: not implemented.
 
-For Debian/stretch this is packaged as a Python DLL wrapper.
+** ETL Website scraper
 
- python3-mediainfodll    0.7.88-1
+This is a test system for an online website at
 
-** Get() method in MediaInfo
+   https://www.anapioficeandfire.com/api/{type0}?page={page}&pageSize={pageSize}
 
-There have been problems. The DLL library does not work as
-advertised. The file MediaInfoExample.py doesn't work as advertised. The
-Inform() method works.
+It's only a test system and captures to text file.
 
-** UTF-8 encoded file names
+*** Extract
 
-There is a problem with loading files that have OS filename paths that
-contain UTF-8 characters.
+ _Fetcher _IceFire and the test scripts test_Test and test_Test1
 
-I've tried setting PYTHONIOENCODING=utf-8 but to no avail.
+Load the data from the website in pages.
+The test scripts write to text files.
 
-This seems to be a file-system encoding issue. There's a test for it in
-Test.
+*** Transform
 
-I have tried to see if a symlink could be used to access the file and then
-invoke the MediaInfo Open() on that. This doesn't work either.
+_IceFireR provides an iterator for each record on the website pages, see test_Test2
 
-Because of that, you need to move all the files over to non-UTF-8 names
-before you call this script.
+There's a configuration file that I use to make use of a local web proxy.
+blkswn.cfg see Fetcher. There are limits on the number of web-accesses.
 
-The MediaInfo library doesn't resolve symbolic links and I've not done so
-either.
+The test scripts produce text files, in which the records are transformed
+to dictionaries and each text file books.txt characters.txt or houses.txt 
 
-On GNU/Linux, I use recode, in a shell script, to rename UTF-8 filenames to
-ASCII before I use this method.
+** Load and Simple Analysis
 
-** New object for each file, so Close() is redundant
+You can then load the textfile output with a typing string "books" (or
+{type0}, see IceFire's class variables.)
 
-The Close() call seems to be redundant. I found that I could not issue an
-Open(f), Close(), Open(g) on the same MediaInfo object.
+And do some simple analysis. 
 
-* Development
+This is tested and demonstrated in test_Test3
 
-** unittest under make
+This stage uses a file but should be implemented as a iterator stream.
 
-I've packaged some testing files: Test and Test2. They
-are invoked using make(1).
+** Improvements
 
-There are logging messages sent to minfo.log.
+*** web-source: Link response header: next, first, prev, last
 
-Test2 tries to process all the files in a directory named by SDIR
+I didn't make full use of these. I just count the pages. Some databases
+might enforce prev and next and not allow incremental page access.
 
-** unidecode
+*** Streamed filtering
 
-The UTF-8 encoding on some of the test file names could not be simplified
-using the module unidecode. I only use this for logging, but you may see
-messages like
-
- site-packages/unidecode/__init__.py:50:
- RuntimeWarning: Surrogate character '\udcbc' will be ignored. 
- You might be using a narrow Python build.
-  return _unidecode(string)
+IceFireA should be able to use an IceFireR as an iterator data source. And
+caching would be a useful extension for that.
 
 
 
