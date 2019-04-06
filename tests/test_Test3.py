@@ -190,6 +190,17 @@ class Test3(unittest.TestCase):
 
         self.logger.info("a). House Breakstone is at {0}".format(v0['url']))
 
+        ## How many males, females and unknown genders are there in the first
+        ## 40 characters? Note, index 0 does not correspond to a character, so
+        ## full range is 1 - 40 both ends inclusive.
+
+        c0 = d0['characters']._src # as an iterable
+        walk, walk2 = itertools.tee(c0)
+
+        c1 = itertools.take(40, c0)
+        self.logger.info(type(c1))
+
+
         pass
 
 
