@@ -125,11 +125,6 @@ class Test3(unittest.TestCase):
         v0 = fctr(self.srcs[0])
         self.logger.info(type(v0))
 
-        for x in self.srcs:
-            self.logger.info(type(fctr(x)))
-
-        return
-
         self.srcs0 = ( fctr(x) for x in self.srcs )
         v0 = next(iter(self.srcs0))
         self.logger.info(type(v0))
