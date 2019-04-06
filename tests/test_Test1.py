@@ -18,6 +18,7 @@ import re
 from urllib.parse import urlparse
 
 from blkswn import Configuration
+from blkswn import IceFire
 
 import unittest
 
@@ -84,11 +85,28 @@ class Test1(unittest.TestCase):
 
         self.logger.info(parts)
 
+    def test_002(self):
+        chs = IceFire(config = Configuration.instance().config, type0='characters')
+        v0 = chs.mkUrl(page=1, pageSize=10)
+        self.assertIsNotNone(v0)
+        self.assertIsInstance(v0, str)
+        self.assertTrue(len(v0) > 0)
+        self.logger.info(v0)
 
-    ## Check empty responses
-    ## Call prior
-    def test_001(self):
-        pass
+    def test_004(self):
+        chs = IceFire(config = Configuration.instance().config, type0='characters')
+        v0 = chs.idx1
+        self.assertIsNotNone(v0)
+        self.assertIsInstance(v0, str)
+        self.assertTrue(len(v0) > 0)
+        self.logger.info(v0)
+
+    def test_006(self):
+        chs = IceFire(config = Configuration.instance().config, type0='characters')
+        v0 = chs.index()
+        self.logger.info(v0)
+        self.logger.info(chs.index0)
+
 
 
 #

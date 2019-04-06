@@ -75,7 +75,7 @@ class _Singleton(object):
 
   def isvalid0(self, url):
     """
-    Utility method to check is a string is a URI.
+    Utility boolean test method to check is a string is a URI.
     """
     try:
         result = urlparse(url)
