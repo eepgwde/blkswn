@@ -230,7 +230,8 @@ class Test(unittest.TestCase):
         """
         ftchr = IceFire(logger=self.logger, config=Configuration.instance().config)
         idx0 = "https://www.anapioficeandfire.com/api/houses"
-        x0 = ftchr.index(url=idx0)
+        ftchr.index(url=idx0)
+        x0 = ftchr.cpage
         self.logger.info(x0[-1])
         self.logger.info(ftchr.index0)
 

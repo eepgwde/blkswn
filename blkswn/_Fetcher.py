@@ -85,7 +85,21 @@ class _Singleton(object):
 
     return True
 
-  def qparts(self, purl):
-    qs = [ x.split('=') for x in purl.split('&') ]
-    return dict(qs)
+  def qparts(self, url, **kwargs):
+    """
+    Extract the query part of a URL and return it as a dictionary.
+
+    The keywords allow a conversion function to be used: fconv=int
+    """
+    purl = url
+    if self.isvalid0(url):
+      purl = urlparse(url).query
+    
+    qs = dict([ x.split('=') for x in purl.split('&') ])
+    if 'fconv' in kwargs:
+      fconv = kwargs['fconv']
+      qs = dict([ (x[0], fconv(x[1])) for x in qs.items() ])
+
+    return qs
+
 

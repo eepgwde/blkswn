@@ -2,7 +2,7 @@
 Test file 
 
 """
-## @file Test1.py
+## @file Test2.py
 # @author weaves
 # @brief Unittest
 #
@@ -18,7 +18,7 @@ import re
 from urllib.parse import urlparse
 
 from blkswn import Configuration
-from blkswn import IceFire
+from blkswn import IceFireR
 
 import unittest
 
@@ -31,7 +31,7 @@ logger.addHandler(sh)
 trs0 = os.path.join(os.path.dirname(__file__), "test.txt")
 
 
-class Test1(unittest.TestCase):
+class Test2(unittest.TestCase):
     """
     A source directory dir0 is taken from the environment as SDIR or 
     is tests/media and should contain .m4a files.
@@ -68,49 +68,16 @@ class Test1(unittest.TestCase):
 
     ## Constructs
     def test_000(self):
-        with open('hdrs.json') as f0:
-            l0 = f0.read()
-        self.logger.info(l0)
-
-        l1 = l0.split(',')
-        parts = []
-        for x in l1:
-            l2 = re.sub(r'[<>]', '', x)
-            l3 = l2.strip().split(';')
-            for y in l3:
-                l4 = y.strip()
-                self.logger.info(str(Configuration.instance().isvalid0(l4)) + "; " + l4)
-                if Configuration.instance().isvalid0(l4):
-                    parts.append(l4)
-
-        self.logger.info(parts)
+        pass
 
     def test_002(self):
-        chs = IceFire(config = Configuration.instance().config, type0='characters')
-        v0 = chs.mkUrl(page=1, pageSize=10)
-        self.assertIsNotNone(v0)
-        self.assertIsInstance(v0, str)
-        self.assertTrue(len(v0) > 0)
-        self.logger.info(v0)
+        pass
 
     def test_004(self):
-        chs = IceFire(config = Configuration.instance().config, type0='characters')
-        v0 = chs.idx1
-        self.assertIsNotNone(v0)
-        self.assertIsInstance(v0, str)
-        self.assertTrue(len(v0) > 0)
-        self.logger.info(v0)
-
-    def test_006(self):
-        chs = IceFire(config = Configuration.instance().config, type0='characters')
-        v0 = chs.index()
-        self.logger.info(v0)
-        self.logger.info(chs.index0)
-
-        self.logger.info(str(chs.pages) + "; " + str(chs.pageSize))
+        pass
 
     def test_008(self):
-        chs = IceFire(config = Configuration.instance().config, type0='characters',
+        chs = IceFireR(config = Configuration.instance().config, type0='characters',
                       logger=self.logger)
 
         ichs = iter(chs)

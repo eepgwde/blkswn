@@ -1,12 +1,10 @@
-## @file _Fetcher.py
-# @brief URLs, headers and JSON
+## @file _IceFire.py
+# @brief Iterator that pages through the server.
 # @author weaves
 #
 # @details
-# Singleton to fetch and split.
+# Each object is fixed to a URL base.
 #
-# @note
-# 
 
 import logging
 import configparser
@@ -30,10 +28,10 @@ class IceFire(Fetcher):
   records.
 
   The record schema are handled in another class.
+
+  @note
+  I've not used the pointers in the header 'next', 'prev', 'first' or 'last'
   """
-  _tions = None
-  _hdrs = None
-  _opener = None
   index0 = None
 
   types0 = ( 'houses', 'characters', 'books')  # these are known to work
@@ -41,6 +39,9 @@ class IceFire(Fetcher):
   idx0 = "https://www.anapioficeandfire.com/api/{type0}"
   idx1 = None
   base0 = "https://www.anapioficeandfire.com/api/{type0}?page={page}&pageSize={pageSize}"
+
+  cpage = None
+  npage = None
 
   def mkUrl(self, page=1, pageSize=10):
     """
@@ -84,7 +85,7 @@ class IceFire(Fetcher):
     """
     Utility method to extract information.
 
-    'index' extracts URLs; 'list' returns a data payload.
+    'index' extracts URLs; 'list' returns a data payload; 'pages' gets max and min pages.
     """
     if 'index' in kwargs:
       return self._refs0(kwargs['index'])
@@ -93,27 +94,47 @@ class IceFire(Fetcher):
       r1 = kwargs['list']
       return ast.literal_eval(r1.decode())
 
+    if 'pages' in kwargs:
+      r1 = kwargs['pages']
+      c0 = Configuration.instance().qparts
+      f0 = lambda x: c0(x, fconv=int)['page']
+      return [ f0(x) for x in r1 ]
+
+    if 'pageSize' in kwargs:    # returns a set
+      r1 = kwargs['pageSize']
+      c0 = Configuration.instance().qparts
+      f0 = lambda x: c0(x, fconv=int)['pageSize']
+      return { f0(x) for x in r1 }
+
   def __iter__(self):
     return self
 
   # Python 3 compatibility
   def __next__(self):
-    return self.next()
+    if self.npage is None:
+      self.index()
+    else:
+      if self.npage >= max(self.pages):
+        raise StopIteration()
 
-  def page(self, page=None, pageSize=None):
+    return self._page0(page=self.npage+1, pageSize=self.pageSize)
+
+  def _page0(self, page=None, pageSize=None):
     """
     Step through the pages.
-    """
-    num = 0
-    while num < n:
-      yield num
-      num += 1
 
-    raise StopIteration()
-    
+    @note
+    I've not used the pointers in the header 'next', 'prev', 'first' or 'last'
+    """
+    yield self.cpage
+    self.npage = page
+    url0 = self.mkUrl(page=self.npage, pageSize=self.pageSize)
+    r = self.fetch(url=url0)
+    self.cpage = self.extract(list=r.read())
+
   def index(self, **kwargs):
     """
-    Gets the first page and processes the Link header.
+    Gets the first page and processes the Link header to get the page count and page size.
     """
     if not 'url' in kwargs:
       kwargs['url'] = self.idx1
@@ -122,5 +143,8 @@ class IceFire(Fetcher):
     if not 'Link' in hdrs:
       raise ValueError('No \'Link\' header in response.')
     self.index0 = self.extract(index=hdrs['Link'])
-    return self.extract(list=r.read())
+    self.pages = self.extract(pages=self.index0)
+    self.pageSize = max(self.extract(pageSize=self.index0))
+    self.cpage = self.extract(list=r.read())
+    self.npage = min(self.pages)
 
