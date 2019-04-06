@@ -68,28 +68,38 @@ class Test2(unittest.TestCase):
 
     ## Constructs
     def test_000(self):
-        pass
-
-    def test_002(self):
-        pass
-
-    def test_004(self):
-        pass
-
-    def test_008(self):
-        chs = IceFireR(config = Configuration.instance().config, type0='characters',
+        chs = IceFireR(config = Configuration.instance().config,
+                       type0='books',
                       logger=self.logger)
 
         ichs = iter(chs)
-        v0 = list(next(chs))[0]
+        v0 = next(chs)
 
-        self.logger.info(v0)
-        self.logger.info(len(v0))
+        self.logger.info(type(v0))
+        self.logger.info("dict: {cnt} {keys}".format(cnt=len(v0), keys=", ".join(v0.keys())))
+        self.logger.info("dict: {url}".format(url=v0['url']))
 
-        v0 = list(next(chs))[0]
+        v0 = next(chs)
 
-        self.logger.info(v0)
-        self.logger.info(len(v0))
+        self.logger.info(type(v0))
+        self.logger.info("dict: {cnt} {keys}".format(cnt=len(v0), keys=", ".join(v0.keys())))
+        self.logger.info("dict: {url}".format(url=v0['url']))
+
+
+    def test_002(self):
+        return
+        chs = IceFireR(config = Configuration.instance().config,
+                       type0='books',
+                       logger=self.logger)
+
+        ichs = iter(chs)
+        houses = [ x for x in ichs ]
+
+        self.assertIsNotNone(houses)
+        self.assertTrue(len(houses) > 0)
+
+        with open('books.txt', 'w') as f0:
+            f0.write(str(houses))
 
 #
 # The sys.argv line will complain to you if you run it with ipython

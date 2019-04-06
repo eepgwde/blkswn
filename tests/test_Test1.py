@@ -68,9 +68,12 @@ class Test1(unittest.TestCase):
 
     ## Constructs
     def test_000(self):
-        with open('hdrs.json') as f0:
-            l0 = f0.read()
-        self.logger.info(l0)
+        try:
+            with open('hdrs.json') as f0:
+                l0 = f0.read()
+                self.logger.info(l0)
+        except:
+            return
 
         l1 = l0.split(',')
         parts = []
@@ -110,19 +113,32 @@ class Test1(unittest.TestCase):
         self.logger.info(str(chs.pages) + "; " + str(chs.pageSize))
 
     def test_008(self):
-        chs = IceFire(config = Configuration.instance().config, type0='characters',
+        chs = IceFire(config = Configuration.instance().config, type0='books',
                       logger=self.logger)
 
         ichs = iter(chs)
-        v0 = list(next(chs))[0]
-
-        self.logger.info(v0)
-        self.logger.info(len(v0))
 
         v0 = list(next(chs))[0]
 
-        self.logger.info(v0)
-        self.logger.info(len(v0))
+        v1 = v0[0]
+        self.logger.info(type(v1))
+        self.logger.info(v1['url'])
+
+        v1 = v0[-1]
+        self.logger.info(type(v1))
+        self.logger.info(v1['url'])
+
+        v0 = list(next(chs))[0]
+
+        v1 = v0[0]
+        self.logger.info(type(v1))
+        self.logger.info(v1['url'])
+
+        v1 = v0[-1]
+        self.logger.info(type(v1))
+        self.logger.info(v1['url'])
+
+
 
 #
 # The sys.argv line will complain to you if you run it with ipython

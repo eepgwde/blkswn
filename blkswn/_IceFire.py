@@ -114,7 +114,7 @@ class IceFire(Fetcher):
     if self.npage is None:
       self.index()
     else:
-      if self.npage >= max(self.pages):
+      if self.npage > max(self.pages):  # loop counting with yield is tricky
         raise StopIteration()
 
     return self._page0(page=self.npage+1, pageSize=self.pageSize)
