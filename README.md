@@ -1,3 +1,39 @@
+# walter eaves
+
+This is my answer for the first part bundled into a setup.py package.
+
+The results are given as a log file of a run test_Test4 see contrib/test.log
+
+The test_Test4.py file is in tests/ and contrib/
+
+The source code is in blkswn/ there is another design README.md in there.
+
+Here are the results.
+
+  INFO:Test:setup
+  INFO:Test:c). books from API: 12
+  INFO:Test:tearDown
+  INFO:Test:setup
+  INFO:Test:a). House Breakstone is at https://www.anapioficeandfire.com/api/houses/41
+  INFO:Test:b). first 40 gender distribution [('Male', 26), ('Female', 14)] 
+  INFO:Test:d). 2 books have character High Septon https://www.anapioficeandfire.com/api/characters/15
+  INFO:Test:tearDown
+
+There is a huge amount of testing done in the test scripts.
+
+Just to summarize, for testing, this is simple implementation that interrogates the website a
+page at a time, for each books, houses and characters. That is re-buffered to give an iterator on
+the underlying records. That is then written to a text file.
+
+The text files are re-loaded - in another test script - and processed as
+iterators. This means that lazy evaluation should be used for all the web-site
+access, so it should be possible to run the methods in test_Test4 directly on an
+iterator that uses the web-site. I didn't attempt this, but in principle, it
+should work.
+
+The code is in the setup.py source distribution. I've also provided my collected
+data as IceFireR.zip
+
 #If you like this challenge, you will like working with Black Swan's Data Science team!
 
 First, before delving into the challenges, we would like to explain that we use version control and virtual environments in our work. We think they are essential to produce good quality stuff and it helps us a lot! So we expect you do the same whlist working on these challenges. Please commit several times as your work progress with meaningful comments and create a requirements file so we can see what you are working with.
