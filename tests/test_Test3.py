@@ -207,7 +207,7 @@ class Test3(unittest.TestCase):
         gtypes = set(gndrs)
         self.logger.info(gtypes)
 
-        ## lambda don't work, try partials
+        ## lambda functions don't work, try partials
         def snap0(x, tag=""):
             return x == tag
 
@@ -224,6 +224,47 @@ class Test3(unittest.TestCase):
         cnts = list( ( sum(map(fx, gndrs)) for fx in fpreds ))
         self.logger.info(cnts)
         self.logger.info("b). first 40 gender distribution {} ".format(list(zip(gtypes, cnts))))
+
+        ## d) How many books does the character ‘High Septon’ appear in?
+        ## (ignoring ‘povcharacters’)
+
+        d0 = IceFireA.make0()
+        c0 = d0['characters']._src # as an iterable
+
+        walk, walk2 = itertools.tee(c0)
+
+        fpred = lambda x: x['name'].find("High Septon") > -1
+        ckey0 = IceFireA.first_true(walk, default={ 'url': 'null' }, pred=fpred)
+        self.logger.info(ckey0['url'])
+
+        ## to match the url of a character in books.characters
+        tag0 = ckey0['url']
+        snap1 = partial(snap0, tag=tag0)
+
+        b0 = d0['books']._src # as an iterable
+        walk, walk2 = itertools.tee(b0)
+
+        bc = dict(((x['name'], x['characters']) for x in walk2))
+        self.logger.info(len(bc.keys()))
+        self.logger.info(bc.keys())
+
+        x00 = list(bc.values())
+        x1 = x00[0]
+        self.logger.info(x1)
+        
+        v0 = ( IceFireA.first_true(x, default='', pred=snap1) for x in x00 )
+        v0 = list(v0)
+        self.logger.info(v0)
+
+        ## if length is greater than 0 is the URL of ckey0
+        def snap2(x):
+            return int(len(x) > 0)
+
+        # finally, apply snap2 and sum 
+        nckey0 = sum(map(snap2, v0))
+
+        self.logger.info("d). {0} books have character High Septon {1}"
+                         .format(nckey0, ckey0['url']))
 
         pass
 
