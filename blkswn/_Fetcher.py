@@ -73,7 +73,10 @@ class _Singleton(object):
 
     return cls._impl
 
-  def isvalid0(url):
+  def isvalid0(self, url):
+    """
+    Utility method to check is a string is a URI.
+    """
     try:
         result = urlparse(url)
         return all([result.scheme, result.netloc, result.path])
@@ -82,5 +85,7 @@ class _Singleton(object):
 
     return True
 
-
+  def qparts(self, purl):
+    qs = [ x.split('=') for x in purl.split('&') ]
+    return dict(qs)
 

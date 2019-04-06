@@ -17,7 +17,7 @@ from collections import Counter
 import re
 from urllib.parse import urlparse
 
-from blkswn import Queue
+from blkswn import Configuration
 
 import unittest
 
@@ -28,15 +28,6 @@ sh = logging.StreamHandler()
 logger.addHandler(sh)
 
 trs0 = os.path.join(os.path.dirname(__file__), "test.txt")
-
-def isvalid0(url):
-    try:
-        result = urlparse(url)
-        return all([result.scheme, result.netloc, result.path])
-    except:
-        return False
-
-    return True
 
 
 class Test1(unittest.TestCase):
@@ -59,6 +50,7 @@ class Test1(unittest.TestCase):
     def setUpClass(cls):
         global logger
         cls.logger = logger
+        Configuration.instance(file='blkswn.cfg')  # singleton
 
     ## Logs out.
     @classmethod
@@ -80,12 +72,17 @@ class Test1(unittest.TestCase):
         self.logger.info(l0)
 
         l1 = l0.split(',')
+        parts = []
         for x in l1:
             l2 = re.sub(r'[<>]', '', x)
             l3 = l2.strip().split(';')
             for y in l3:
                 l4 = y.strip()
-                self.logger.info(str(isvalid0(l4)) + "; " + l4)
+                self.logger.info(str(Configuration.instance().isvalid0(l4)) + "; " + l4)
+                if Configuration.instance().isvalid0(l4):
+                    parts.append(l4)
+
+        self.logger.info(parts)
 
 
     ## Check empty responses

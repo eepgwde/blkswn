@@ -17,6 +17,7 @@ from collections import Counter
 import configparser
 import json
 import ast
+from urllib.parse import urlparse
 
 import unittest
 
@@ -229,10 +230,15 @@ class Test(unittest.TestCase):
         """
         ftchr = IceFire(logger=self.logger, config=Configuration.instance().config)
         idx0 = "https://www.anapioficeandfire.com/api/houses"
-        r = ftchr.index(url=idx0)
-        r1 = r.read()
-        x0 = ast.literal_eval(r1.decode())
+        x0 = ftchr.index(url=idx0)
         self.logger.info(x0[-1])
+        self.logger.info(ftchr.index0)
+
+        x1 = urlparse(ftchr.index0[0])
+        self.assertIsNotNone(x1)
+        self.logger.info(x1.query)
+        d0 = Configuration.instance().qparts(x1.query)
+        self.logger.info(str(d0))
 
 
 #
