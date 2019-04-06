@@ -16,6 +16,7 @@ from datetime import datetime, timezone, timedelta, date
 from collections import Counter
 import re
 import itertools
+from functools import partial
 from urllib.parse import urlparse
 
 from blkswn import Configuration
@@ -190,16 +191,39 @@ class Test3(unittest.TestCase):
 
         self.logger.info("a). House Breakstone is at {0}".format(v0['url']))
 
-        ## How many males, females and unknown genders are there in the first
+        ## b). How many males, females and unknown genders are there in the first
         ## 40 characters? Note, index 0 does not correspond to a character, so
         ## full range is 1 - 40 both ends inclusive.
 
         c0 = d0['characters']._src # as an iterable
-        walk, walk2 = itertools.tee(c0)
 
-        c1 = itertools.take(40, c0)
-        self.logger.info(type(c1))
+        c1 = itertools.islice(c0, 40)
+        walk, walk2 = itertools.tee(c1)
+        self.logger.info(type(walk))
+        self.logger.info(len(list(walk)))
 
+        gndrs = list((x['gender'] for x in walk2))
+        self.logger.info("gndrs {0} {1}".format(len(gndrs), gndrs))
+        gtypes = set(gndrs)
+        self.logger.info(gtypes)
+
+        ## lambda don't work, try partials
+        def snap0(x, tag=""):
+            return x == tag
+
+        tag0 = list(gtypes)[0]
+        snap1 = partial(snap0, tag=tag0)
+        v0 = snap1(gndrs[0])
+        self.logger.info("snap1: {} {}".format(v0, tag0))
+
+        ## List of partials
+
+        fpreds = ( partial(snap0, tag=x) for x in gtypes )
+        fpreds = list(fpreds)
+
+        cnts = list( ( sum(map(fx, gndrs)) for fx in fpreds ))
+        self.logger.info(cnts)
+        self.logger.info("b). first 40 gender distribution {} ".format(list(zip(gtypes, cnts))))
 
         pass
 
