@@ -107,6 +107,8 @@ class Test1(unittest.TestCase):
         self.logger.info(v0)
         self.logger.info(chs.index0)
 
+        v0 = Configuration.instance().qparts(chs.index0[0])
+        self.logger.info(v0)
 
 
 #
