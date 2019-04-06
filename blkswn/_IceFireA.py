@@ -11,6 +11,7 @@ import socket
 from urllib import request
 
 from functools import partial
+from itertools import *
 
 from blkswn import Configuration
 from blkswn import IceFire
@@ -29,6 +30,21 @@ class IceFireA(object):
 
   _type0 = None                 # books or characters or houses
   _src = None                   # the iterator
+
+  @classmethod
+  def make0(cls, **kwargs):
+    ts = IceFire.types0
+    ts = ", ".join(ts)
+
+    cls.srcs = ( ( "{x}".format(x=x), "{x}.txt".format(x=x) ) for x in IceFire.types0 )
+
+    cls.srcs = list(cls.srcs)  
+
+    fctr = lambda x: IceFireA(type0=x[0], file=x[1])
+    cls.srcs0 = ( fctr(x) for x in cls.srcs )
+    v0 = list((x._type0, x) for x in cls.srcs0)
+    return dict(v0)
+
 
   def __init__(self, **kwargs):
     """
@@ -53,6 +69,23 @@ class IceFireA(object):
     if self._src is None:
       raise ValueError("no data source given")
 
+    def __str__(self):
+      return str(self._type0)
+
   def filter(self, **kwargs):
     pass
+
+  @classmethod
+  def first_true(cls, iterable, default=False, pred=None):
+    """Returns the first true value in the iterable.
+
+    If no true value is found, returns *default*
+
+    If *pred* is not None, returns the first item
+    for which pred(item) is true.
+
+    """
+    # first_true([a,b,c], x) --> a or b or c or x
+    # first_true([a,b], x, f) --> a if f(a) else b if f(b) else x
+    return next(filter(pred, iterable), default)
 

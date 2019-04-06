@@ -88,6 +88,27 @@ class Test3(unittest.TestCase):
         self.logger.info("dict: {url}".format(url=v0['url']))
 
 
+    def test_001(self):
+        q0 = ['a','b','c']
+
+        x = 'b'
+        v0 = IceFireA.first_true(q0, default=x)
+        self.logger.info("first_true: {0}".format(v0))
+        self.assertTrue(v0 == q0[0])
+
+        fpred = lambda x: x == 'b'
+
+        x = '0'
+        v0 = IceFireA.first_true(q0, default=x, pred=fpred)
+        self.logger.info("first_true: {0}".format(v0))
+        self.assertTrue(v0 == 'b')
+
+        fpred = lambda x: x == 'x'
+
+        v0 = IceFireA.first_true(q0, default=x, pred=fpred)
+        self.logger.info("first_true: {0}".format(v0))
+        self.assertTrue(v0 == x)
+
     def test_002(self):
         """
         Basic loading from file for testing.
@@ -108,10 +129,7 @@ class Test3(unittest.TestCase):
 
         pass
 
-    def test_006(self):
-        """
-        Other checks
-        """
+    def make0(self):
         ts = IceFire.types0
         ts = ", ".join(ts)
         self.logger.info("006: {ts}".format(ts=ts))
@@ -125,23 +143,41 @@ class Test3(unittest.TestCase):
         v0 = fctr(self.srcs[0])
         self.logger.info(type(v0))
 
+        # check one
         self.srcs0 = ( fctr(x) for x in self.srcs )
-        v0 = next(iter(self.srcs0))
+        v0 = next(self.srcs0)
         self.logger.info(type(v0))
 
-        return
+        # now all
+        self.srcs0 = list( fctr(x) for x in self.srcs )
 
-        self.srcs0 = ( list(x) for x in self.srcs )
+    def test_006(self):
+        """
+        Other checks
+        """
+        self.make0()
+        srcs0 = ( list(x._src) for x in self.srcs0 )
+        cnts = ( len(x) for x in srcs0 )
 
-        cnts = ( len(x) for x in self.srcs0 )
         self.logger.info(", ".join((str(x) for x in cnts)) )
 
-        return
-        books = IceFireA(type0="books", file="books.txt")
-        l0 = self.ar._src
-        self.logger.info(type(l0))
-        l1 = list(l0)
-        self.logger.info("004: count: {cnt}".format(cnt=len(l1)) )
+    def test_008(self):
+        self.make0()
+        v0 = list((x._type0, x) for x in self.srcs0)
+        self.logger.info(type(v0[0]))
+        d0 = dict(v0)
+        self.logger.info(d0.keys())
+
+        ## Books from API
+        b0 = list(d0['books']._src)
+        self.logger.info("c). books from API: {0}".format(len(b0)))
+
+    def test_010(self):
+        d0 = IceFireA.make0()
+        self.logger.info("factory: {0}".format(d0.keys()))
+
+        h0 = list(d0['books']._src)
+        pass
 
 
 #
