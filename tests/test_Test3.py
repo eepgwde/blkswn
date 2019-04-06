@@ -15,6 +15,7 @@ from unidecode import unidecode
 from datetime import datetime, timezone, timedelta, date
 from collections import Counter
 import re
+import itertools
 from urllib.parse import urlparse
 
 from blkswn import Configuration
@@ -176,7 +177,19 @@ class Test3(unittest.TestCase):
         d0 = IceFireA.make0()
         self.logger.info("factory: {0}".format(d0.keys()))
 
-        h0 = list(d0['books']._src)
+        h0 = d0['houses']._src # as an iterable
+        walk, walk2 = itertools.tee(h0)
+
+        # check it can work
+        v0 = IceFireA.first_true(walk, default='null')
+        self.logger.info(v0['url'])
+
+        fpred = lambda x: x['name'].find("Breakstone") > -1
+        v0 = IceFireA.first_true(walk2, default='null', pred=fpred)
+        self.logger.info(v0['url'])
+
+        self.logger.info("a). House Breakstone is at {0}".format(v0['url']))
+
         pass
 
 
