@@ -21,6 +21,13 @@ export X_LOGFILE
 all::
 	true
 
+all-local: data/v0.json
+
+data/v0.json: data/json_file.json
+	sed -e 's/ false,/ False,/g' -e 's/ true,/ True,/g' < $< > $@
+
+#	python -mjson.tool < $< | sed -e 's/ false,/ False,/g' -e 's/ true,/ True,/g' > $@
+
 check:: contrib/$(X_LOGFILE)
 
 contrib/$(X_LOGFILE): $(X_LOGFILE)
