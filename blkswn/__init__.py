@@ -9,6 +9,8 @@ from blkswn._IceFire import IceFire
 from blkswn._IceFireR import IceFireR
 from blkswn._IceFireA import IceFireA
 
+from blkswn._Utility import _Utility as Utility
+
 __copyright__ = 'Copyright 2019 Walter Eaves'
 __license__ = 'GPLv3'
 __title__ = 'blkswn'

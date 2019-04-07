@@ -1,3 +1,7 @@
+.ipynb_checkpoints/*
+bak/*
+.eggs/**
+*.egg-info
 contrib/**
 *.pyc
 test.log
