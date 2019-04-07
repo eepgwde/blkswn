@@ -23,10 +23,10 @@ all::
 
 all-local: data/v0.json
 
-data/v0.json: data/json_file.json
-	sed -e 's/ false,/ False,/g' -e 's/ true,/ True,/g' < $< > $@
+data/v0.json: bak/blkswn.json
+	python -mjson.tool < $< > $@
 
-#	python -mjson.tool < $< | sed -e 's/ false,/ False,/g' -e 's/ true,/ True,/g' > $@
+#	sed -e 's/ false,/ False,/g' -e 's/ true,/ True,/g' < $< > $@
 
 check:: contrib/$(X_LOGFILE)
 
